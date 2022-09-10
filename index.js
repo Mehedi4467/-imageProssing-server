@@ -68,14 +68,21 @@ async function run() {
 
             await sharp(req.files.primaryImage[0].path)
                 .resize(500, 500, {
-                    fit: sharp.fit.inside,
-                    withoutEnlargement: true, // if image's original width or height is less than specified width and height, sharp will do nothing(i.e no enlargement)
+                    // fit: sharp.fit.inside,
+                    fit: sharp.fit.contain,
+                    background: 'white'
+
+                    // fit: sharp.fit.cover,
+                    // position: sharp.strategy.entropy
+                    // withoutEnlargement: true, // if image's original width or height is less than specified width and height, sharp will do nothing(i.e no enlargement)
                 })
-                .jpeg({ quality: 100 })
+
+                .png({ quality: 100 })
                 .toFile(
                     path.resolve(req.files.primaryImage[0].destination, 'resized', primaryImage)
 
                 )
+
             fs.unlinkSync(req.files.primaryImage[0].path)
             console.log(`products/resized/${primaryImage}`)
             res.send({ SUCCESS: 'SUCCESS!' })
